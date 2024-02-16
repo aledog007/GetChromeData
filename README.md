@@ -13,7 +13,7 @@ The three other files print individually on the terminal.
 - Be sure that Python3 is installed on your computer
 - Be sure that Chrome is not running in the background otherwise close it in the task manager
 
-<h2>Use:</h2>
+<h2>How to use:</h2>
 
 Download scripts with git and before using the script:
 
