@@ -18,7 +18,7 @@ The three other files print individually on the terminal.
 Download scripts with git and before using the script:
 
 ```
-pip install pip install pywin32
+pip install pywin32
 pip install pycryptodome
 pip install pypiwin32
 ```
