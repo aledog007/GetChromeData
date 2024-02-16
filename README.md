@@ -15,7 +15,7 @@ The three other files print individually on the terminal
 
 <h2>Use:</h2>
 
-download scripts with git and before using the script:
+Download scripts with git and before using the script:
 
 ```
 pip install pip install pywin32
@@ -23,7 +23,7 @@ pip install pycryptodome
 pip install pypiwin32
 ```
 
-execute with:
+Execute with:
 
 ```
 python3 GetChromeData.py
