@@ -8,7 +8,7 @@ The three other files print individually on the terminal
 
 <h2>Please note:</h2>
 
-⚠**!I am not liable for illegal activities and disclaim any liability, please use this with caution and only for educational purposes!**⚠
+⚠ **!I am not liable for illegal activities and disclaim any liability, please use this with caution and only for educational purposes!** ⚠
 
 - Be sure that Python3 is installed on your computer
 - Be sure that Chrome is not running in the background otherwise close it in the task manager
