@@ -4,7 +4,7 @@
 
 In GetChromeData all 3 scripts are executed and saved as files in the Downloads folder.
 
-The three other files print individually on the terminal
+The three other files print individually on the terminal.
 
 <h2>Please note:</h2>
 
