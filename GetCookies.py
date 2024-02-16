@@ -1,11 +1,13 @@
-import os
-import json
 import base64
-import sqlite3
+import json
+import os
 import shutil
+import sqlite3
 from datetime import datetime, timedelta
-import win32crypt # pip install pypiwin32
-from Crypto.Cipher import AES # pip install pycryptodome
+
+import win32crypt  # pip install pypiwin32
+from Crypto.Cipher import AES  # pip install pycryptodome
+
 
 def get_chrome_datetime(chromedate):
     """Return a `datetime.datetime` object from a chrome format datetime
@@ -19,10 +21,17 @@ def get_chrome_datetime(chromedate):
     else:
         return ""
 
+
 def get_encryption_key():
-    local_state_path = os.path.join(os.environ["USERPROFILE"],
-                                    "AppData", "Local", "Google", "Chrome",
-                                    "User Data", "Local State")
+    local_state_path = os.path.join(
+        os.environ["USERPROFILE"],
+        "AppData",
+        "Local",
+        "Google",
+        "Chrome",
+        "User Data",
+        "Local State",
+    )
     with open(local_state_path, "r", encoding="utf-8") as f:
         local_state = f.read()
         local_state = json.loads(local_state)
@@ -35,6 +44,7 @@ def get_encryption_key():
     # using a session key derived from current user's logon credentials
     # doc: http://timgolden.me.uk/pywin32-docs/win32crypt.html
     return win32crypt.CryptUnprotectData(key, None, None, None, 0)[1]
+
 
 def decrypt_data(data, key):
     try:
@@ -52,10 +62,20 @@ def decrypt_data(data, key):
             # not supported
             return ""
 
+
 def main():
     # local sqlite Chrome cookie database path
-    db_path = os.path.join(os.environ["USERPROFILE"], "AppData", "Local",
-                            "Google", "Chrome", "User Data", "Default", "Network", "Cookies")
+    db_path = os.path.join(
+        os.environ["USERPROFILE"],
+        "AppData",
+        "Local",
+        "Google",
+        "Chrome",
+        "User Data",
+        "Default",
+        "Network",
+        "Cookies",
+    )
     # copy the file to current directory
     # as the database will be locked if chrome is currently open
     filename = "Cookies.db"
@@ -68,9 +88,11 @@ def main():
     db.text_factory = lambda b: b.decode(errors="ignore")
     cursor = db.cursor()
     # get the cookies from `cookies` table
-    cursor.execute("""
+    cursor.execute(
+        """
     SELECT host_key, name, value, creation_utc, last_access_utc, expires_utc, encrypted_value
-    FROM cookies""")
+    FROM cookies"""
+    )
     # you can also search by domain, e.g thepythoncode.com
     # cursor.execute("""
     # SELECT host_key, name, value, creation_utc, last_access_utc, expires_utc, encrypted_value
@@ -78,13 +100,22 @@ def main():
     # WHERE host_key like '%thepythoncode.com%'""")
     # get the AES key
     key = get_encryption_key()
-    for host_key, name, value, creation_utc, last_access_utc, expires_utc, encrypted_value in cursor.fetchall():
+    for (
+        host_key,
+        name,
+        value,
+        creation_utc,
+        last_access_utc,
+        expires_utc,
+        encrypted_value,
+    ) in cursor.fetchall():
         if not value:
             decrypted_value = decrypt_data(encrypted_value, key)
         else:
             # already decrypted
             decrypted_value = value
-        print(f"""
+        print(
+            f"""
         Host: {host_key}
         Cookie name: {name}
         Cookie value (decrypted): {decrypted_value}
@@ -92,17 +123,22 @@ def main():
         Last access datetime (UTC): {get_chrome_datetime(last_access_utc)}
         Expires datetime (UTC): {get_chrome_datetime(expires_utc)}
         ===============================================================
-        """)
+        """
+        )
         # update the cookies table with the decrypted value
         # and make session cookie persistent
-        cursor.execute("""
+        cursor.execute(
+            """
         UPDATE cookies SET value = ?, has_expires = 1, expires_utc = 99999999999999999, is_persistent = 1, is_secure = 0
         WHERE host_key = ?
-        AND name = ?""", (decrypted_value, host_key, name))
+        AND name = ?""",
+            (decrypted_value, host_key, name),
+        )
     # commit changes
     db.commit()
     # close connection
     db.close()
+
 
 if __name__ == "__main__":
     main()

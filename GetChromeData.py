@@ -8,7 +8,7 @@ import sqlite3
 import sys
 from datetime import datetime, timedelta
 
-import win32crypt  # pip install pypiwin32/ pip install pywin32
+import win32crypt  # pip install pywin32
 from Crypto.Cipher import AES  # pip install pycryptodome
 
 # Global Constant
